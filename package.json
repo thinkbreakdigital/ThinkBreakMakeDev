@@ -1,0 +1,21 @@
+{
+  "name": "make-scenario-development-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Client-agnostic tooling for Make scenario development",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "make:setup": "node scripts/setup-make.mjs",
+    "make:pull": "node --env-file=.env scripts/sync-scenarios.mjs --pull-only",
+    "make:push": "node --env-file=.env scripts/sync-scenarios.mjs --push-only",
+    "make:sync": "node --env-file=.env scripts/sync-scenarios.mjs",
+    "make:dry-run": "node --env-file=.env scripts/sync-scenarios.mjs --dry-run",
+    "makesync": "node --env-file=.env scripts/sync-scenarios.mjs"
+  },
+  "devDependencies": {
+    "@inquirer/prompts": "^8.3.2",
+    "@makehq/cli": "^1.4.0"
+  }
+}
