@@ -28,6 +28,12 @@ Add error handlers around recoverable external operations. Do not swallow errors
 
 Keep new scenarios inactive until their modules, mappings, schedules, connections, and error paths have been reviewed and tested. Validate exported blueprint JSON after each change.
 
+## Make platform rules
+
+- Reference a field only from a module earlier in the same flow. A later module cannot supply a value to an earlier one, even inside a repeated loop, even if the later module already ran in a previous cycle.
+- To carry a value such as a pagination cursor across Repeater or Iterator cycles within one execution, use two `util:SetVariable2` modules with the same `name` and `scope`. Place an initializer before the loop and an updater after the value is computed inside the loop. Point readers at the initializer, since it sits earlier in the flow. Never point a reader at the updater.
+- Do not invent a Make module identifier or its parameter shape. A wrong shape can still pass `scenarios create` or `scenarios update` and fail only at runtime. Confirm the shape first. Check an existing scenario in the repo, or check Make's own skills reference (`integromat/make-skills` on GitHub). If neither has the module, ask the user to add an empty instance of it in the Make UI, save it, and read the real exported shape.
+
 ## Implementation style
 
 Read target files and nearby usage before editing. Reuse existing functions and patterns. Make the smallest correct change and avoid unrelated refactors.
