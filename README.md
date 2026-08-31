@@ -1,8 +1,9 @@
 # Make scenario development template
 
-Use this repository as the starting point for a client-specific Make development project. Each clone connects to one Make organization and stores its exported scenarios locally.
+## Intro
 
-Keep client repositories private. Make exports can contain account IDs, connection labels, webhook URLs, sample values, and business logic.
+Howdy! This is my way of being able to drop a Make section into a client folder and allow agents to work within it.
+You can copy this folder into a project, put client information/rules/conventions into /spec/client-rules.md, set your .env variables, and you are ready to modify, back up, and control your Make.com scenarios in your IDE of choice.
 
 ## Requirements
 
@@ -110,4 +111,4 @@ The command creates the scenario in an inactive state, records `publishedScenari
 
 ## Record client rules
 
-Add client-specific terminology, systems, restrictions, and requirements to `spec/client-rules.md`. Keep `AGENTS.md` generic so the same starter works for every client.
+Add client-specific terminology, systems, restrictions, and requirements to `spec/client-rules.md`.
