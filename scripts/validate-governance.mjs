@@ -12,9 +12,7 @@ const RISK_ORDER = ['low', 'moderate', 'high', 'critical'];
 const EXCEPTION_KEYS = ['onUnknownInput', 'onExternalApiFailure', 'onValidationFailure', 'onAIUncertainty'];
 const EXCEPTION_ACTIONS = new Set(['stop', 'retry', 'manual-review']);
 
-// Missing tests is a warning while spec/tests/ has no format yet (Phase 1).
-// It becomes an error once cases.json exists for a scenario to point at.
-const MISSING_TESTS_SEVERITY = 'warning';
+const MISSING_TESTS_SEVERITY = 'error';
 
 const SECRET_PATTERNS = [
   { rule: 'secret-anthropic-key', pattern: /sk-ant-[A-Za-z0-9_-]{10,}/ },
@@ -358,6 +356,46 @@ function checkDataPolicy(path, sidecar, dataPolicy, findings) {
   }
 }
 
+// --- UAT case file shape -------------------------------------------------
+
+function checkTestFiles(testsRoot, findings) {
+  if (!existsSync(testsRoot)) return;
+
+  for (const entry of readdirSync(testsRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+
+    const casesPath = join(testsRoot, entry.name, 'cases.json');
+    if (!existsSync(casesPath)) continue;
+
+    let cases;
+    try {
+      cases = readJson(casesPath);
+    } catch (error) {
+      findings.push({ severity: 'error', rule: 'tests-parse', target: casesPath, message: `${casesPath} could not be parsed: ${error.message}` });
+      continue;
+    }
+
+    if (cases.scenario !== entry.name) {
+      findings.push({ severity: 'error', rule: 'tests-schema', target: casesPath, message: `${casesPath}: scenario "${cases.scenario}" does not match the directory name "${entry.name}".` });
+    }
+    if (!Array.isArray(cases.cases) || cases.cases.length === 0) {
+      findings.push({ severity: 'error', rule: 'tests-schema', target: casesPath, message: `${casesPath}: cases must be a non-empty array.` });
+      continue;
+    }
+    cases.cases.forEach((testCase, index) => {
+      if (typeof testCase.name !== 'string' || !testCase.name.trim()) {
+        findings.push({ severity: 'error', rule: 'tests-schema', target: casesPath, message: `${casesPath}: cases[${index}] requires a non-empty name.` });
+      }
+      if (!testCase.input || typeof testCase.input !== 'object') {
+        findings.push({ severity: 'error', rule: 'tests-schema', target: casesPath, message: `${casesPath}: cases[${index}] ("${testCase.name}") requires an input object.` });
+      }
+      if (!testCase.expected || typeof testCase.expected !== 'object') {
+        findings.push({ severity: 'error', rule: 'tests-schema', target: casesPath, message: `${casesPath}: cases[${index}] ("${testCase.name}") requires an expected object.` });
+      }
+    });
+  }
+}
+
 // --- policy-and-scenario-in-same-change warning -------------------------
 
 function checkPolicyChangedWithScenario(root, governance, findings) {
@@ -432,6 +470,7 @@ export function runGovernanceChecks({ root = '.' } = {}) {
     scanFileForSecrets(path, allowlist, findings);
   }
 
+  checkTestFiles(testsRoot, findings);
   checkPolicyChangedWithScenario(root, governance, findings);
 
   const errors = findings.filter((finding) => finding.severity === 'error');

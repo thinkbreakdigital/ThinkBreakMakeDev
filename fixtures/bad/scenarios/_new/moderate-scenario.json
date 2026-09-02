@@ -1,0 +1,6 @@
+{
+  "name": "Moderate scenario missing tests",
+  "teamId": 10,
+  "scheduling": { "type": "indefinitely", "interval": 900 },
+  "blueprint": { "flow": [], "metadata": { "version": 1 } }
+}

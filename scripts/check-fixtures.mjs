@@ -9,6 +9,8 @@ const EXPECTED_BAD_RULES = [
   'sidecar-review-expired',
   'ai-data-policy',
   'secret-anthropic-key',
+  'sidecar-tests',
+  'tests-schema',
 ];
 
 function test(name, fn) {

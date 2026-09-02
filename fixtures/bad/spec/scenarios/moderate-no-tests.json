@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "key": "moderate-no-tests",
+  "scenarioId": null,
+  "stagedFile": "scenarios/_new/moderate-scenario.json",
+  "owner": "connor@thinkbreakdigital.net",
+  "risk": "moderate",
+  "reviewedOn": "2026-08-20",
+  "data": {
+    "classification": ["internal"]
+  },
+  "ai": {
+    "used": false,
+    "provider": null,
+    "purpose": null,
+    "sendsClassifications": []
+  },
+  "flags": {
+    "customerFacing": false,
+    "writesToExternalSystem": false
+  },
+  "exceptions": {
+    "onUnknownInput": "stop",
+    "onExternalApiFailure": { "action": "retry", "attempts": 3 },
+    "onValidationFailure": "manual-review",
+    "onAIUncertainty": "manual-review"
+  }
+}
