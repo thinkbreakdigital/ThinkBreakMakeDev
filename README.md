@@ -119,4 +119,26 @@ The command creates the scenario in an inactive state, records `publishedScenari
 
 ## Record client rules
 
-Add client-specific terminology, systems, restrictions, and requirements to `spec/client-rules.md`.
+Add client-specific terminology, systems, restrictions, and requirements to `spec/client-rules.md`. Edit `spec/data-policy.json` directly to change which data classifications exist and which AI providers, if any, each one allows.
+
+## Check governance
+
+Every scenario needs a sidecar at `spec/scenarios/<key>.json` recording its owner, risk tier, data handling, and AI use. See [`spec/scenarios/README.md`](spec/scenarios/README.md) for the field reference, and copy [`spec/scenarios/_template.json`](spec/scenarios/_template.json) to start one.
+
+Run the checker before a push:
+
+```bash
+npm run make:check
+```
+
+`make:check` reads `spec/governance.json`, `spec/data-policy.json`, and every sidecar, and cross-checks them against `scenarios/manifest.json` and `scenarios/_new/`. It reports risk tier violations, AI data policy violations, missing owners and tests, expired reviews, and possible secrets in scenario JSON. It never loads `.env`, so it runs the same way with or without a Make API key configured. `npm run make:push` runs the same check and refuses to create a scenario while it reports an error.
+
+A risk tier that requires tests needs case files at `spec/tests/<key>/cases.json`. See [`spec/tests/README.md`](spec/tests/README.md) for the format.
+
+Run the audit to see the whole picture:
+
+```bash
+npm run make:audit
+```
+
+`make:audit` reports scenario counts by risk tier and active state, AI and customer-facing scenario counts, and gaps: missing sidecars, owners, tests, and overdue reviews. It writes `reports/automation-register.md`, which is not committed.

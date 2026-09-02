@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 // credentials. It reads only local files, so it runs the same way with or
 // without a Make API key configured, including in CI.
 
-const RISK_ORDER = ['low', 'moderate', 'high', 'critical'];
+export const RISK_ORDER = ['low', 'moderate', 'high', 'critical'];
 const EXCEPTION_KEYS = ['onUnknownInput', 'onExternalApiFailure', 'onValidationFailure', 'onAIUncertainty'];
 const EXCEPTION_ACTIONS = new Set(['stop', 'retry', 'manual-review']);
 
@@ -34,11 +34,11 @@ const SKIPPED_KEYS = new Set(['designer', '__IMTCONN__']);
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?)?$/;
 
-function readJson(path) {
+export function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
-function tryReadJson(path) {
+export function tryReadJson(path) {
   if (!existsSync(path)) return null;
   return readJson(path);
 }
@@ -55,7 +55,7 @@ function walkJsonFiles(root, result = []) {
   return result;
 }
 
-function flattenManifestScenarios(manifest) {
+export function flattenManifestScenarios(manifest) {
   const scenarios = [];
   for (const organization of manifest?.organizations ?? []) {
     for (const team of organization.teams ?? []) {
@@ -147,7 +147,7 @@ function scanFileForSecrets(path, allowlist, findings) {
 
 // --- sidecar loading and schema validation ----------------------------
 
-function loadSidecars(sidecarsRoot, governance, findings) {
+export function loadSidecars(sidecarsRoot, governance, findings) {
   const sidecars = [];
   if (!existsSync(sidecarsRoot)) return sidecars;
 
