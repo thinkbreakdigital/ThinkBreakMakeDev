@@ -8,7 +8,7 @@ Read the relevant files under `spec/` before you make meaningful changes. Use `s
 
 ## Make scenario work
 
-Run `npm run make:setup` before the first pull. The setup command stores the Make API key, zone, and organization ID in the ignored `.env` file. Do not commit, print, or expose credentials.
+Run `npm run make:setup` before the first pull. The setup command stores the Make API key, zone, and organization ID in the ignored `.env` file. Git-ignoring `.env` stops it from being committed. It does not stop an agent with filesystem or shell access from reading it: `.env` is not a security boundary against the tools working in this repo. See [README.md](README.md#secret-handling) for what `.env` does and does not protect against. Do not commit, print, or expose credentials regardless.
 
 Use the npm scripts documented in `README.md` to pull, inspect, create, and reconcile scenarios. The scripts load `.env` themselves. If you run `make-cli` directly, load `.env` into that terminal first:
 

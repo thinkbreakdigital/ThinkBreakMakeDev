@@ -43,6 +43,14 @@ MAKE_ORGANIZATION_ID="123456"
 
 Git ignores `.env`. Do not print, commit, or paste its contents into issues, documentation, or chat.
 
+### Secret handling
+
+Git-ignoring `.env` and setting it to mode `0600` stops the key from being committed, from appearing in scenario JSON, and from being read by other operating-system users. It does not stop an agent working in this project from reading it. Any process with shell or filesystem access here can run `cat .env`. The same values sit in `process.env` for every `npm run make:*` command. Call this **standard mode**: it fits solo development on a client project, and it is not a barrier against the tools working in the repo.
+
+A **protected mode** is on the roadmap, not built yet. The repo would store only a secret reference, such as `MAKE_API_KEY_SECRET=thinkbreak/client-a/make-api`, and a resolver would fetch the real value from an OS keyring, 1Password CLI, `pass`, or Bitwarden CLI when a command runs. That narrows exposure from "always present in the environment" to "present for the duration of one command," and it adds an audit trail on the vault side. It does not remove the limit above: an agent that can run the resolver can still read the secret the resolver returns.
+
+The governance layer below holds one property today: `make:check` and `make:audit` never load `.env` and never see `MAKE_API_KEY`. They run the same way with or without credentials configured, including in CI with no secrets set up.
+
 ## Pull the organization
 
 Pull the current scenarios before editing anything:
