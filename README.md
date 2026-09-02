@@ -45,9 +45,13 @@ Git ignores `.env`. Do not print, commit, or paste its contents into issues, doc
 
 ### Secret handling
 
-`.env` exists to allow you to set variables and secrets that you may not want AI agents to see, but would still like to use in scenarios. AGENTS.md explains how to securely load these variables to agents. IMPORTANT: If an agent has shell or file system access it CAN READ THIS. I highly recommend setting up an additional layer of loading secrets using a 3rd party password or security service.
+`.env` holds the Make API key. Git-ignoring it at mode `0600` stops it from being committed and from being read by other operating-system users. It does not hide it from an agent working in this repository. Any command an agent runs is a process on the same machine, under the same operating-system user, and it inherits the same environment.
 
-For security checks, `make:check` and `make:audit` never load `.env` and never see `MAKE_API_KEY`. They run the same way with or without credentials configured, including in CI with no secrets set up.
+Because of that, agents in this repository never run the commands that load `.env`: `make:setup`, `make:pull`, `make:push`, `make:sync`, `make:dry-run`, and any direct `make-cli` invocation. See [AGENTS.md](AGENTS.md) for the full rule. Run these commands yourself, in your own terminal, and the agent works from the results. `.claude/settings.json` also requires manual approval before any of these commands run, so an agent cannot run one without you seeing a prompt first.
+
+No script or setting can let an agent run these commands while keeping the key out of its reach. Removing the agent from that step is what actually works.
+
+`make:check` and `make:audit` never load `.env` and never see `MAKE_API_KEY`. They run the same way with or without credentials configured, including in CI with no secrets set up.
 
 ## Pull the organization
 

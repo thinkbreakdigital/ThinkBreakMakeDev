@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "ask": [
+      "Bash(npm run make:setup)",
+      "Bash(npm run make:pull)",
+      "Bash(npm run make:push)",
+      "Bash(npm run make:sync)",
+      "Bash(npm run make:dry-run)",
+      "Bash(npm run makesync)",
+      "Bash(make-cli *)",
+      "Bash(npx make-cli *)",
+      "Bash(cat .env)",
+      "Read(.env)"
+    ]
+  }
+}

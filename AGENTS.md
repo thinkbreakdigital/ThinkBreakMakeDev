@@ -8,23 +8,17 @@ Read the relevant files under `spec/` before you make meaningful changes. Use `s
 
 ## Make scenario work
 
-Run `npm run make:setup` before the first pull. The setup command stores the Make API key, zone, and organization ID in the ignored `.env` file. Git-ignoring `.env` stops it from being committed. It does not stop an agent with filesystem or shell access from reading it. `.env` is not a security boundary against the tools working in this repo. See [README.md](README.md#secret-handling) for what `.env` does and does not protect against. Do not commit, print, or expose credentials regardless.
+`npm run make:setup`, `npm run make:pull`, `npm run make:push`, `npm run make:sync`, `npm run make:dry-run`, and any direct `make-cli` command all load `.env`, which holds the Make API key. Do not run these yourself. Ask the user to run them in their own terminal, and wait for the result before continuing.
 
-Use the npm scripts documented in `README.md` to pull, inspect, create, and reconcile scenarios. The scripts load `.env` themselves. If you run `make-cli` directly, load `.env` into that terminal first:
+This is not a courtesy. `.env` is not a security boundary against an agent with shell or filesystem access. A command an agent runs inherits the same environment and can read the key. Asking the user to run credentialed commands is the only way to keep the key out of an agent's reach. See [README.md](README.md#secret-handling) for the full explanation. `.claude/settings.json` requires manual approval before any of these commands run, as a backstop against running them silently.
 
-```bash
-set -a
-. ./.env
-set +a
-```
-
-Inspect the current exported blueprint before proposing or making a workflow change. Modify the exported blueprint instead of giving manual UI steps unless the user asks for instructions.
+Once the user has pulled, work from `scenarios/manifest.json` and the exported scenario tree. Inspect the current exported blueprint before proposing or making a workflow change. Modify the exported blueprint instead of giving manual UI steps unless the user asks for instructions.
 
 Preserve working module mappings, connections, variables, routes, and filters unless the task requires a change. Do not invent Make module fields or external API properties. Check current documentation and repository payloads before you use an unfamiliar endpoint, field, or module option.
 
 Validate external input at the boundary. Handle null, empty, malformed, and unexpected values explicitly. Paginate API results, handle rate limits and retries, and make external writes safe to retry where possible.
 
-Add error handlers around recoverable external operations. Do not swallow errors. Log enough context to identify the affected scenario, record, and operation without exposing secrets.
+Add error handlers around recoverable external operations. Do not swallow errors. Log enough context to identify the affected scenario, record, and operate without exposing secrets.
 
 Keep new scenarios inactive until their modules, mappings, schedules, connections, and error paths have been reviewed and tested. Validate exported blueprint JSON after each change.
 
@@ -32,14 +26,14 @@ Keep new scenarios inactive until their modules, mappings, schedules, connection
 
 Follow this order for any scenario change:
 
-1. **Pull.** Run `npm run make:pull` to get the current remote state.
+1. **Pull.** Ask the user to run `npm run make:pull`, and wait for the current remote state.
 2. **Read spec.** Read `spec/client-rules.md`, `spec/data-policy.json`, and the scenario's sidecar in `spec/scenarios/`. If no sidecar exists yet, create one first from [`spec/scenarios/_template.json`](spec/scenarios/_template.json).
 3. **Assess risk.** Set the sidecar's `risk` at or above the floor that `spec/governance.json`'s `riskTriggers` implies from the scenario's data classifications and flags.
 4. **Change.** Edit the staged or exported scenario JSON, and the sidecar, to match.
 5. **Check.** Run `npm run make:check` and fix every error it reports.
-6. **Dry run.** Run `npm run make:dry-run` to preview what a push would do.
+6. **Dry run.** Ask the user to run `npm run make:dry-run` to preview what a push would do.
 7. **Produce a review.** Summarize the change, its risk tier, and the check result for the person who approves it.
-8. **Deploy by risk.** `npm run make:push` always creates a scenario inactive. In a tier where `spec/governance.json` sets `agentMayActivate: true`, an agent may then activate it. A `high` or `critical` tier needs a human to review and activate it instead.
+8. **Deploy by risk.** Ask the user to run `npm run make:push`, which always creates a scenario inactive. In a tier where `spec/governance.json` sets `agentMayActivate: true`, an agent may then recommend activating it in Make. A `high` or `critical` tier needs a human to review and decide on activation instead.
 
 ## Agent authority boundaries
 
@@ -47,13 +41,14 @@ Agents may:
 
 - inspect scenarios
 - make local changes
-- create new inactive scenarios
+- prepare new inactive scenarios for the user to push
 - write and run sidecars and tests
 - run `make:check` and `make:audit`
 - prepare deployment reviews
 
 Agents may not, on their own:
 
+- run `npm run make:setup`, `make:pull`, `make:push`, `make:sync`, or `make:dry-run`, or invoke `make-cli` directly. Ask the user to run these instead.
 - activate a `high` or `critical` risk scenario
 - remove a human-review requirement
 - lower a scenario's risk classification to make a change pass
