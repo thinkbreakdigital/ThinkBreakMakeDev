@@ -45,11 +45,9 @@ Git ignores `.env`. Do not print, commit, or paste its contents into issues, doc
 
 ### Secret handling
 
-Git-ignoring `.env` and setting it to mode `0600` stops the key from being committed, from appearing in scenario JSON, and from being read by other operating-system users. It does not stop an agent working in this project from reading it. Any process with shell or filesystem access here can run `cat .env`. The same values sit in `process.env` for every `npm run make:*` command. Call this **standard mode**: it fits solo development on a client project, and it is not a barrier against the tools working in the repo.
+`.env` exists to allow you to set variables and secrets that you may not want AI agents to see, but would still like to use in scenarios. AGENTS.md explains how to securely load these variables to agents. IMPORTANT: If an agent has shell or file system access it CAN READ THIS. I highly recommend setting up an additional layer of loading secrets using a 3rd party password or security service.
 
-A **protected mode** is on the roadmap, not built yet. The repo would store only a secret reference, such as `MAKE_API_KEY_SECRET=thinkbreak/client-a/make-api`, and a resolver would fetch the real value from an OS keyring, 1Password CLI, `pass`, or Bitwarden CLI when a command runs. That narrows exposure from "always present in the environment" to "present for the duration of one command," and it adds an audit trail on the vault side. It does not remove the limit above: an agent that can run the resolver can still read the secret the resolver returns.
-
-The governance layer below holds one property today: `make:check` and `make:audit` never load `.env` and never see `MAKE_API_KEY`. They run the same way with or without credentials configured, including in CI with no secrets set up.
+For security checks, `make:check` and `make:audit` never load `.env` and never see `MAKE_API_KEY`. They run the same way with or without credentials configured, including in CI with no secrets set up.
 
 ## Pull the organization
 
@@ -131,11 +129,11 @@ Run the checker before a push:
 npm run make:check
 ```
 
-`make:check` reads `spec/governance.json`, `spec/data-policy.json`, and every sidecar, and cross-checks them against `scenarios/manifest.json` and `scenarios/_new/`. It reports risk tier violations, AI data policy violations, missing owners and tests, expired reviews, and possible secrets in scenario JSON. It never loads `.env`, so it runs the same way with or without a Make API key configured. `npm run make:push` runs the same check and refuses to create a scenario while it reports an error.
+`make:check` reads `spec/governance.json`, `spec/data-policy.json`, and every sidecar, and cross-checks them against `scenarios/manifest.json` and `scenarios/_new/`. It reports risk tier violations, AI data policy violations, missing owners and tests, expired reviews, and possible secrets in scenario JSON. It never loads `.env`, so it runs the same way with or without a Make API key configured. `npm run make:push` runs the same check and refuses to create a scenario if the check reports an error.
 
 A risk tier that requires tests needs case files at `spec/tests/<key>/cases.json`. See [`spec/tests/README.md`](spec/tests/README.md) for the format.
 
-Run the audit to see the whole picture:
+Run the audit for a summary across every scenario:
 
 ```bash
 npm run make:audit

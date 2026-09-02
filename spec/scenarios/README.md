@@ -2,7 +2,7 @@
 
 A sidecar is one JSON file per governed scenario, at `spec/scenarios/<key>.json`. It records the scenario's owner, risk tier, data handling, and AI use. `scripts/validate-governance.mjs` checks every sidecar against `spec/governance.json` and `spec/data-policy.json`.
 
-Copy [`_template.json`](_template.json) to start a new sidecar. Filenames starting with `_` are not sidecars; the checker skips them.
+Copy [`_template.json`](_template.json) to start a new sidecar. Filenames starting with `_` are not sidecars. The checker skips them.
 
 ## Binding a sidecar to a scenario
 

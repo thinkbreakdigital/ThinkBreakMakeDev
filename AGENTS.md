@@ -2,13 +2,13 @@
 
 ## Project context
 
-This repository stores and changes scenarios for one Make organization. The local `.env` identifies that organization with `MAKE_ZONE` and `MAKE_ORGANIZATION_ID`.
+This repository stores and changes scenarios for one Make organization. The local `.env` identifies that organization with `MAKE_API_KEY`, `MAKE_ZONE`, and `MAKE_ORGANIZATION_ID`. Do not read `.env` directly. If a user explicitly requests it, explain why that is highly insecure and that it is there to provide security while still working with organization keys and secrets.
 
 Read the relevant files under `spec/` before you make meaningful changes. Use `spec/client-rules.md` for client-specific rules, context, terminology, systems, and requirements. Update the relevant spec in the same task when behavior, scope, architecture, configuration, or workflow requirements change.
 
 ## Make scenario work
 
-Run `npm run make:setup` before the first pull. The setup command stores the Make API key, zone, and organization ID in the ignored `.env` file. Git-ignoring `.env` stops it from being committed. It does not stop an agent with filesystem or shell access from reading it: `.env` is not a security boundary against the tools working in this repo. See [README.md](README.md#secret-handling) for what `.env` does and does not protect against. Do not commit, print, or expose credentials regardless.
+Run `npm run make:setup` before the first pull. The setup command stores the Make API key, zone, and organization ID in the ignored `.env` file. Git-ignoring `.env` stops it from being committed. It does not stop an agent with filesystem or shell access from reading it. `.env` is not a security boundary against the tools working in this repo. See [README.md](README.md#secret-handling) for what `.env` does and does not protect against. Do not commit, print, or expose credentials regardless.
 
 Use the npm scripts documented in `README.md` to pull, inspect, create, and reconcile scenarios. The scripts load `.env` themselves. If you run `make-cli` directly, load `.env` into that terminal first:
 
@@ -39,7 +39,7 @@ Follow this order for any scenario change:
 5. **Check.** Run `npm run make:check` and fix every error it reports.
 6. **Dry run.** Run `npm run make:dry-run` to preview what a push would do.
 7. **Produce a review.** Summarize the change, its risk tier, and the check result for the person who approves it.
-8. **Deploy by risk.** `npm run make:push` always creates a scenario inactive. A tier where `spec/governance.json` sets `agentMayActivate: true` may then be activated by an agent. A `high` or `critical` tier needs a human to review and activate it.
+8. **Deploy by risk.** `npm run make:push` always creates a scenario inactive. In a tier where `spec/governance.json` sets `agentMayActivate: true`, an agent may then activate it. A `high` or `critical` tier needs a human to review and activate it instead.
 
 ## Agent authority boundaries
 
@@ -62,7 +62,9 @@ Agents may not, on their own:
 - put credentials in scenario JSON
 - delete a failing test
 
-The rule behind this list: an agent must not change the rule that is blocking its own proposed change. `npm run make:check` warns when a policy file, `spec/governance.json`, `spec/data-policy.json`, or a sidecar, changes in the same working tree as a scenario file, so that edit stays visible for review. That warning is the limit of what this repo enforces on its own. An agent with write access to `spec/` can still make the edit; the warning gives a human reviewer something concrete to check, not something the tooling blocks by itself.
+The rule behind this list: an agent must not change the rule that is blocking its own proposed change. `npm run make:check` warns when `spec/governance.json`, `spec/data-policy.json`, or a sidecar changes in the same working tree as a scenario file. That keeps a policy edit visible for review.
+
+That warning is the limit of what this repo enforces on its own. An agent with write access to `spec/` can still make the edit. The warning gives a human reviewer something concrete to check. It does not block the edit by itself.
 
 ## Make platform rules
 

@@ -1,6 +1,6 @@
 # UAT fixtures
 
-Each scenario with a risk tier that sets `requiresTests: true` in [`spec/governance.json`](../governance.json) needs a case file at `spec/tests/<key>/cases.json`, where `<key>` matches the sidecar's `key` field. `scripts/validate-governance.mjs` checks that the file exists and that its shape is valid. It does not execute the cases against a live scenario; that needs a run harness this repo does not yet have.
+A scenario needs a case file at `spec/tests/<key>/cases.json` when its risk tier sets `requiresTests: true` in [`spec/governance.json`](../governance.json). `<key>` matches the sidecar's `key` field. `scripts/validate-governance.mjs` checks that the file exists and that its shape is valid. It does not execute the cases against a live scenario. That needs a run harness this repo does not yet have.
 
 ## File shape
 
