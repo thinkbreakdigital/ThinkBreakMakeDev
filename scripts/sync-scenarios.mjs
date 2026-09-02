@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { runGovernanceChecks } from './validate-governance.mjs';
 
 const outputRoot = 'scenarios';
 const statePath = join(outputRoot, '.sync-state.json');
@@ -330,6 +331,24 @@ function pushStagedScenarios(state, remote) {
   return created;
 }
 
+function governanceAllowsPush() {
+  const result = runGovernanceChecks({ root: '.' });
+
+  if (result.fatal) {
+    console.error(`Governance check could not run: ${result.fatal}`);
+    return false;
+  }
+  if (result.errors.length > 0) {
+    console.error(`Governance check found ${result.errors.length} error(s). Push refused. Run npm run make:check for the full report.`);
+    for (const finding of result.errors) {
+      console.error(`  ${finding.rule}  ${finding.target} — ${finding.message}`);
+    }
+    return false;
+  }
+
+  return true;
+}
+
 const state = readState();
 let remote = collectRemoteScenarios();
 let conflicts = 0;
@@ -341,8 +360,10 @@ if (pullEnabled) {
 
 if (conflicts > 0) {
   process.exitCode = 1;
-} else if (pushEnabled) {
+} else if (pushEnabled && governanceAllowsPush()) {
   created = pushStagedScenarios(state, remote);
+} else if (pushEnabled) {
+  process.exitCode = 1;
 }
 
 if (created > 0 && !dryRun) remote = collectRemoteScenarios();
