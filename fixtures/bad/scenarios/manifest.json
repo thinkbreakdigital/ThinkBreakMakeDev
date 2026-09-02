@@ -1,0 +1,33 @@
+{
+  "zone": "us1.make.com",
+  "organizationId": 1,
+  "organizations": [
+    {
+      "id": 1,
+      "name": "Example Org",
+      "teams": [
+        {
+          "id": 10,
+          "name": "Ops",
+          "folders": [],
+          "scenarios": [
+            {
+              "id": 4218733,
+              "name": "Invoice dunning reminders",
+              "folderId": null,
+              "folderPath": null,
+              "file": "scenarios/Example-Org--1/Ops--10/_unfiled/Invoice-dunning-reminders--4218733.json"
+            },
+            {
+              "id": 5000001,
+              "name": "Ungoverned legacy scenario",
+              "folderId": null,
+              "folderPath": null,
+              "file": "scenarios/Example-Org--1/Ops--10/_unfiled/Ungoverned-legacy-scenario--5000001.json"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

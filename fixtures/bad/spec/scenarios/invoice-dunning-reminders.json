@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "key": "invoice-dunning-reminders",
+  "scenarioId": 4218733,
+  "stagedFile": null,
+  "risk": "low",
+  "reviewedOn": "2024-01-01",
+  "data": {
+    "classification": ["payment", "customer-pii"]
+  },
+  "ai": {
+    "used": true,
+    "provider": "google",
+    "purpose": "Drafts the reminder wording from invoice fields.",
+    "sendsClassifications": ["credentials", "customer-pii"]
+  },
+  "flags": {
+    "customerFacing": true,
+    "writesToExternalSystem": true
+  },
+  "exceptions": {}
+}

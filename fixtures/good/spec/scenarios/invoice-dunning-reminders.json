@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "key": "invoice-dunning-reminders",
+  "scenarioId": 4218733,
+  "stagedFile": null,
+  "owner": "connor@thinkbreakdigital.net",
+  "risk": "high",
+  "reviewedOn": "2026-08-20",
+  "data": {
+    "classification": ["customer-pii", "internal"]
+  },
+  "ai": {
+    "used": true,
+    "provider": "anthropic",
+    "purpose": "Drafts the reminder wording from invoice fields.",
+    "sendsClassifications": ["customer-pii"]
+  },
+  "flags": {
+    "customerFacing": true,
+    "writesToExternalSystem": true
+  },
+  "exceptions": {
+    "onUnknownInput": "stop",
+    "onExternalApiFailure": { "action": "retry", "attempts": 3 },
+    "onValidationFailure": "manual-review",
+    "onAIUncertainty": "manual-review"
+  }
+}

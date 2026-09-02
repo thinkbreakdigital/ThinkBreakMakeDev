@@ -1,0 +1,17 @@
+{
+  "id": 4218733,
+  "name": "Invoice dunning reminders",
+  "isActive": false,
+  "scheduling": { "type": "indefinitely", "interval": 900 },
+  "blueprint": {
+    "flow": [
+      {
+        "id": 1,
+        "module": "anthropic:createMessage",
+        "parameters": { "__IMTCONN__": 55221 },
+        "mapper": { "prompt": "Draft a reminder for {{1.customerName}}" }
+      }
+    ],
+    "metadata": { "version": 1 }
+  }
+}

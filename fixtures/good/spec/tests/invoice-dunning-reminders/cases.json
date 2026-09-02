@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "scenario": "invoice-dunning-reminders",
+  "cases": [
+    {
+      "name": "overdue-30-days",
+      "input": { "invoiceId": "INV-1001", "daysOverdue": 30, "amount": 450.0 },
+      "expected": { "action": "send-reminder", "template": "first-notice" }
+    },
+    {
+      "name": "already-paid",
+      "input": { "invoiceId": "INV-1002", "daysOverdue": 0, "paid": true },
+      "expected": { "action": "none" }
+    },
+    {
+      "name": "generated-wording",
+      "input": { "invoiceId": "INV-1003", "daysOverdue": 62, "amount": 1200.0 },
+      "expected": {
+        "oneOf": { "tone": ["polite", "firm"] },
+        "prohibited": ["internal note", "do not contact", "write-off"]
+      }
+    }
+  ]
+}

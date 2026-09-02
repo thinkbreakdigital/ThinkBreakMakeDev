@@ -1,0 +1,7 @@
+{
+  "id": 5000001,
+  "name": "Ungoverned legacy scenario",
+  "isActive": true,
+  "scheduling": { "type": "indefinitely", "interval": 900 },
+  "blueprint": { "flow": [], "metadata": { "version": 1 } }
+}

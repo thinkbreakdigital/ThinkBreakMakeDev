@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "riskTiers": {
+    "low": {
+      "requiresOwner": true,
+      "requiresTests": false,
+      "requiresHumanReview": false,
+      "requiresExceptionPolicy": false,
+      "agentMayActivate": true,
+      "reviewIntervalDays": 365
+    },
+    "moderate": {
+      "requiresOwner": true,
+      "requiresTests": true,
+      "requiresHumanReview": false,
+      "requiresExceptionPolicy": true,
+      "agentMayActivate": true,
+      "reviewIntervalDays": 180
+    },
+    "high": {
+      "requiresOwner": true,
+      "requiresTests": true,
+      "requiresHumanReview": true,
+      "requiresExceptionPolicy": true,
+      "agentMayActivate": false,
+      "reviewIntervalDays": 90
+    },
+    "critical": {
+      "requiresOwner": true,
+      "requiresTests": true,
+      "requiresHumanReview": true,
+      "requiresExceptionPolicy": true,
+      "agentMayActivate": false,
+      "reviewIntervalDays": 30
+    }
+  },
+  "riskTriggers": {
+    "note": "A scenario's effective risk is the highest tier any matching trigger implies. validate-governance.mjs fails a sidecar whose declared risk is lower than this floor.",
+    "handlesClassifications": {
+      "customer-pii": "high",
+      "payment": "critical",
+      "health": "critical",
+      "credentials": "critical"
+    },
+    "writesToExternalSystem": "moderate",
+    "customerFacing": "high",
+    "usesGenerativeAI": "moderate"
+  },
+  "enforcement": {
+    "unclassifiedPulledScenario": "error",
+    "unclassifiedStagedScenario": "error",
+    "secretMatch": "error",
+    "secretHeuristic": "warning",
+    "policyAndScenarioInSameChange": "warning"
+  }
+}

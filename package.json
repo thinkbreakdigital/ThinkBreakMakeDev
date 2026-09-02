@@ -12,7 +12,10 @@
     "make:push": "node --env-file=.env scripts/sync-scenarios.mjs --push-only",
     "make:sync": "node --env-file=.env scripts/sync-scenarios.mjs",
     "make:dry-run": "node --env-file=.env scripts/sync-scenarios.mjs --dry-run",
-    "makesync": "node --env-file=.env scripts/sync-scenarios.mjs"
+    "makesync": "node --env-file=.env scripts/sync-scenarios.mjs",
+    "make:check": "node scripts/validate-governance.mjs",
+    "make:audit": "node scripts/audit-scenarios.mjs",
+    "test": "node scripts/check-fixtures.mjs"
   },
   "devDependencies": {
     "@inquirer/prompts": "^8.3.2",
