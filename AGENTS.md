@@ -28,6 +28,42 @@ Add error handlers around recoverable external operations. Do not swallow errors
 
 Keep new scenarios inactive until their modules, mappings, schedules, connections, and error paths have been reviewed and tested. Validate exported blueprint JSON after each change.
 
+## Governance workflow
+
+Follow this order for any scenario change:
+
+1. **Pull.** Run `npm run make:pull` to get the current remote state.
+2. **Read spec.** Read `spec/client-rules.md`, `spec/data-policy.json`, and the scenario's sidecar in `spec/scenarios/`. If no sidecar exists yet, create one first from [`spec/scenarios/_template.json`](spec/scenarios/_template.json).
+3. **Assess risk.** Set the sidecar's `risk` at or above the floor that `spec/governance.json`'s `riskTriggers` implies from the scenario's data classifications and flags.
+4. **Change.** Edit the staged or exported scenario JSON, and the sidecar, to match.
+5. **Check.** Run `npm run make:check` and fix every error it reports.
+6. **Dry run.** Run `npm run make:dry-run` to preview what a push would do.
+7. **Produce a review.** Summarize the change, its risk tier, and the check result for the person who approves it.
+8. **Deploy by risk.** `npm run make:push` always creates a scenario inactive. A tier where `spec/governance.json` sets `agentMayActivate: true` may then be activated by an agent. A `high` or `critical` tier needs a human to review and activate it.
+
+## Agent authority boundaries
+
+Agents may:
+
+- inspect scenarios
+- make local changes
+- create new inactive scenarios
+- write and run sidecars and tests
+- run `make:check` and `make:audit`
+- prepare deployment reviews
+
+Agents may not, on their own:
+
+- activate a `high` or `critical` risk scenario
+- remove a human-review requirement
+- lower a scenario's risk classification to make a change pass
+- edit `spec/governance.json` or `spec/data-policy.json` to make a scenario pass a check it would otherwise fail
+- disable error handling
+- put credentials in scenario JSON
+- delete a failing test
+
+The rule behind this list: an agent must not change the rule that is blocking its own proposed change. `npm run make:check` warns when a policy file, `spec/governance.json`, `spec/data-policy.json`, or a sidecar, changes in the same working tree as a scenario file, so that edit stays visible for review. That warning is the limit of what this repo enforces on its own. An agent with write access to `spec/` can still make the edit; the warning gives a human reviewer something concrete to check, not something the tooling blocks by itself.
+
 ## Make platform rules
 
 - Reference a field only from a module earlier in the same flow. A later module cannot supply a value to an earlier one, even inside a repeated loop, even if the later module already ran in a previous cycle.
