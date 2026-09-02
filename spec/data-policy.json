@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "notes": "A client project may edit this file directly to change what is allowed. Every edit is a policy change: see the 'policyAndScenarioInSameChange' rule in spec/governance.json.",
+  "classifications": {
+    "public": {
+      "aiAllowed": true
+    },
+    "internal": {
+      "aiAllowed": true
+    },
+    "customer-pii": {
+      "aiAllowed": "conditional",
+      "approvedProviders": ["anthropic", "openai"],
+      "loggingAllowed": false
+    },
+    "credentials": {
+      "aiAllowed": false,
+      "loggingAllowed": false
+    },
+    "payment": {
+      "aiAllowed": false
+    },
+    "health": {
+      "aiAllowed": false
+    }
+  }
+}

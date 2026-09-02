@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "key": "example-scenario-key",
+  "scenarioId": null,
+  "stagedFile": "scenarios/_new/example-scenario-key.json",
+  "owner": "name@example.com",
+  "risk": "moderate",
+  "reviewedOn": "2026-09-02",
+  "data": {
+    "classification": ["internal"]
+  },
+  "ai": {
+    "used": false,
+    "provider": null,
+    "purpose": null,
+    "sendsClassifications": []
+  },
+  "flags": {
+    "customerFacing": false,
+    "writesToExternalSystem": false
+  },
+  "exceptions": {
+    "onUnknownInput": "stop",
+    "onExternalApiFailure": { "action": "retry", "attempts": 3 },
+    "onValidationFailure": "manual-review",
+    "onAIUncertainty": "manual-review"
+  }
+}
